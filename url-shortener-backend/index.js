@@ -25,11 +25,10 @@ app.post('/shorten', async (req, res) => {
 
     // Generate a short URL identifier
     const shortId = generateShortId();
-
     // Store the URL and shortId in Supabase
     const { data, error } = await supabase
         .from('URLs')  // Adjust to match your Supabase table name
-        .insert([{ original_URL: longUrl, short_URL: shortId }]);
+        .insert([{ original_URL: longUrl, short_URL: shortId}]);
 
         if (error) {
             console.log(error);
