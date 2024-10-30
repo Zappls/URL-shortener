@@ -28,14 +28,15 @@ app.post('/shorten', async (req, res) => {
 
     // Store the URL and shortId in Supabase
     const { data, error } = await supabase
-        .from('urls')  // Adjust to match your Supabase table name
-        .insert([{ original_url: longUrl, short_url: shortId }]);
+        .from('URLs')  // Adjust to match your Supabase table name
+        .insert([{ original_URL: longUrl, short_URL: shortId }]);
 
-    if (error) {
-        return res.status(500).json({ error: 'Failed to shorten URL' });
+        if (error) {
+            console.log(error);
+        return res.status(500).json({ error: 'Failed to shorten URL' }) 
     }
 
-    res.json({ shortUrl: `http://localhost:${PORT}/${shortId}` });
+    res.json({ short_URL: `http://localhost:${PORT}/${shortId}` });
 });
 
 // Route to handle redirection
@@ -44,9 +45,9 @@ app.get('/:shortId', async (req, res) => {
 
     // Fetch the original URL from Supabase using the shortId
     const { data, error } = await supabase
-        .from('urls')  // Adjust to match your Supabase table name
-        .select('original_url')
-        .eq('short_url', shortId)
+        .from('URLs')  // Adjust to match your Supabase table name
+        .select('original_URL')
+        .eq('short_URL', shortId)
         .single();
 
     if (error || !data) {
@@ -54,7 +55,7 @@ app.get('/:shortId', async (req, res) => {
     }
 
     // Redirect to the original URL
-    res.redirect(data.original_url);
+    res.redirect(data.original_URL);
 });
 
 app.listen(PORT, () => {
