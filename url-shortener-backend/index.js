@@ -14,20 +14,17 @@ app.use(express.json()); // Allows the server to parse JSON requests
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 // Generate a unique ID (or alias) for shortened URLs
-const generateShortId = () => Math.random().toString(36).substr(2, 6); // Generates a random 6-character string
+const generateShortId = () => Math.random().toString(36).slice(2, 8); // Generates a random 6-character string
 
 // Route to shorten URL
-app.post('/shorten', async (req, res) => {
-    const { longUrl } = req.body;
-    if (!longUrl) {
-        return res.status(400).json({ error: 'URL is required' });
-    }
+export function postFunction(longUrl) {
+    app.post('/shorten', async (req, res) => {
 
     // Generate a short URL identifier
     const shortId = generateShortId();
     // Store the URL and shortId in Supabase
     const { data, error } = await supabase
-        .from('URLs')  // Adjust to match your Supabase table name
+        .from('URLs')  
         .insert([{ original_URL: longUrl, short_URL: shortId}]);
 
         if (error) {
@@ -35,8 +32,8 @@ app.post('/shorten', async (req, res) => {
         return res.status(500).json({ error: 'Failed to shorten URL' }) 
     }
 
-    res.json({ short_URL: `http://localhost:${PORT}/${shortId}` });
-});
+    res.json({ short_URL: `https://localhost:${PORT}/${shortId}` });
+});}
 
 // Route to handle redirection
 app.get('/:shortId', async (req, res) => {
@@ -58,5 +55,5 @@ app.get('/:shortId', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on https://localhost:${PORT}`);
 });
