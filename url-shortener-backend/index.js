@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 app.options('*', cors()); // Preflight requests
 
 app.use(cors({
-    origin: 'https://weary-troll-v6pj9r99xggrcwjwr-5500.app.github.dev', // Adjust this if your client is on a different port or URL
+    origin: 'https://weary-troll-v6pj9r99xggrcwjwr-5500.app.github.dev', // Client address
     methods: ['POST', 'GET', 'OPTIONS'],
     allowedHeaders: ['Content-Type']
 }));
@@ -20,7 +20,7 @@ app.use(express.json()); // Allows the server to parse JSON requests
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 // Generate a unique ID (or alias) for shortened URLs
-const generateShortId = () => Math.random().toString(36).slice(2, 8); // Generates a random 6-character string
+const generateShortId = () => Math.random().toString(36).slice(2, 8); 
 
 // Route to shorten URL
 app.post('/shorten', async (req, res) => {
@@ -45,7 +45,7 @@ app.get('/:shortId', async (req, res) => {
 
     // Fetch the original URL from Supabase using the shortId
     const { data, error } = await supabase
-        .from('URLs')  // Adjust to match your Supabase table name
+        .from('URLs')  
         .select('original_URL')
         .eq('short_URL', shortId)
         .single();
