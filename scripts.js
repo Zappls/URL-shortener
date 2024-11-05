@@ -1,8 +1,6 @@
-import { postFunction } from "./url-shortener-backend";
-
 const shortenUrl = async (longUrl) => {
     try {
-        const response = await fetch('https://localhost:3000/shorten', { // Correct the URL
+        const response = await fetch('https://weary-troll-v6pj9r99xggrcwjwr-3000.app.github.dev/shorten', { // Correct the URL
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

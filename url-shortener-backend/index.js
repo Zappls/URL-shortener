@@ -1,13 +1,19 @@
-// index.js
 import express from 'express';
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
+import cors from 'cors';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+app.options('*', cors()); // Preflight requests
 
+app.use(cors({
+    origin: 'https://weary-troll-v6pj9r99xggrcwjwr-5500.app.github.dev', // Adjust this if your client is on a different port or URL
+    methods: ['POST', 'GET', 'OPTIONS'],
+    allowedHeaders: ['Content-Type']
+}));
 app.use(express.json()); // Allows the server to parse JSON requests
 
 // Initialize Supabase client
@@ -30,7 +36,7 @@ app.post('/shorten', async (req, res) => {
         return res.status(500).json({ error: 'Failed to shorten URL' });
     }
 
-    res.json({ short_URL: `https://localhost:${PORT}/${shortId}` });
+    res.json({ short_URL: `https://weary-troll-v6pj9r99xggrcwjwr-${PORT}.app.github.dev/${shortId}` });
 });
 
 // Route to handle redirection
@@ -47,11 +53,10 @@ app.get('/:shortId', async (req, res) => {
     if (error || !data) {
         return res.status(404).json({ error: 'URL not found' });
     }
-
     // Redirect to the original URL
     res.redirect(data.original_URL);
 });
 
 app.listen(PORT, () => {
-    console.log(`Server running on https://localhost:${PORT}`);
+    console.log(`Server running on https://weary-troll-v6pj9r99xggrcwjwr-${PORT}.app.github.dev`);
 });
