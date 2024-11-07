@@ -34,7 +34,7 @@ app.post("/shorten", async (req, res) => {
 
   const { data, error } = await supabase
     .from("URLs")
-    .insert([{ original_URL, short_URL: shortId, access_counter: 0 }]);
+    .insert([{ original_URL, short_URL: shortId, access_counter: 0 }]); // Initialize counter to 0
 
   if (error) {
     console.log(error);
@@ -46,22 +46,25 @@ app.post("/shorten", async (req, res) => {
   });
 });
 
-// Route to handle redirection
 app.get("/:shortId", async (req, res) => {
   const { shortId } = req.params;
 
-  // Fetch the original URL from Supabase using the shortId
+  // Fetch the original URL and current access_counter
   const { data, error } = await supabase
     .from("URLs")
-    .select("original_URL")
+    .select("original_URL, access_counter")
     .eq("short_URL", shortId)
     .single();
 
   if (error || !data) {
+    console.log("Fetch error:", error);
     return res.status(404).json({ error: "URL not found" });
   }
 
-  await supabase
+  console.log("Current access_counter:", data.access_counter); // Log current counter
+
+  // Attempt to update access_counter and last_accessed
+  const { error: updateError, data: updateData } = await supabase
     .from("URLs")
     .update({
       access_counter: data.access_counter + 1,
@@ -69,12 +72,17 @@ app.get("/:shortId", async (req, res) => {
     })
     .eq("short_URL", shortId);
 
+  if (updateError) {
+    console.log("Update error:", updateError);
+    return res.status(500).json({ error: "Failed to update access count" });
+  }
+
+  console.log("Update successful:", updateData); // Log successful update response
+
   // Redirect to the original URL
   res.redirect(data.original_URL);
 });
-app.put("/update", async (req, res) => {
-  const { last_clicked, clicks } = req.params;
-});
+
 app.listen(PORT, () => {
   console.log(
     `Server running on https://weary-troll-v6pj9r99xggrcwjwr-${PORT}.app.github.dev`
