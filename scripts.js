@@ -1,5 +1,3 @@
-
-
 const shortenUrl = async (longUrl) => {
   try {
     const response = await fetch(
