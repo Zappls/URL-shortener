@@ -25,7 +25,7 @@ const supabase = createClient(
 );
 
 // Generate a unique ID (or alias) for shortened URLs
-const generateShortId = () => Math.random().toString(36).slice(2, 8);
+const generateShortId = () => Math.random().toString(36).slice(2, 12);
 
 // Route to shorten URL
 app.post("/shorten", async (req, res) => {
