@@ -1,4 +1,4 @@
-const shortenUrl = async (longUrl) => {
+const shortenUrl = async (longUrl, shortCode) => {
   try {
     const response = await fetch(
       "https://weary-troll-v6pj9r99xggrcwjwr-3000.app.github.dev/shorten",
@@ -8,15 +8,16 @@ const shortenUrl = async (longUrl) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ original_URL: longUrl }), // Sends the long URL in the body
+        body: JSON.stringify({ original_URL: longUrl, shortId: shortCode }), // Sends the long URL in the body
       }
     );
 
     const data = await response.json();
     if (response.ok) {
+      let urliBurli = data.short_URL.slice(58);
       document.getElementById(
         "shortUrlDisplay"
-      ).innerHTML = `Shortened URL: <a href="${data.short_URL}" target="_blank">${data.short_URL}</a>`;
+      ).innerHTML = `Shortened URL: <a href="${data.short_URL}" target="_blank">URLiab.com/${urliBurli}</a>`;
     } else {
       console.error("Error:", data.error);
     }
@@ -28,6 +29,11 @@ const shortenUrl = async (longUrl) => {
 document.getElementById("urlForm").addEventListener("submit", function (event) {
   event.preventDefault();
   const longUrl = document.getElementById("longUrl").value;
-
-  shortenUrl(longUrl);
+  const shortCode = document.getElementById("shortCode").value;
+  const rndCode = Math.random().toString(36).slice(2, 8);
+  if (shortCode == "") {
+    shortenUrl(longUrl, rndCode);
+  } else {
+    shortenUrl(longUrl, shortCode);
+  }
 });

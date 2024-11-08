@@ -23,22 +23,44 @@ const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_KEY
 );
+let short_URLarray = [];
+
+const fetchShortURLs = async () => {
+  const { data, error } = await supabase.from("URLs").select("short_URL");
+  if (error) {
+    console.error("Error fetching URLs:", error.message);
+    return;
+  }
+  // Populate short_URLarray with existing short URLs
+  short_URLarray = data.map((item) => item.short_URL);
+};
 
 // Generate a unique ID (or alias) for shortened URLs
-const generateShortId = () => Math.random().toString(36).slice(2, 12);
+const generateShortId = (shortCode) => {
+  let result = shortCode || Math.random().toString(36).slice(2, 8);
+  while (short_URLarray.includes(result)) {
+    result = Math.random().toString(36).slice(2, 8); // Regenerate if duplicate
+  }
+  return result;
+};
 
 // Route to shorten URL
 app.post("/shorten", async (req, res) => {
-  const { original_URL } = req.body; // Extract the long URL from the request body
-  const shortId = generateShortId();
+  const { original_URL, shortId: customCode } = req.body; // Extract the long URL from the request body
+  await fetchShortURLs();
+  let shortId = generateShortId(customCode);
 
   const { data, error } = await supabase
     .from("URLs")
     .insert([{ original_URL, short_URL: shortId, access_counter: 0 }]); // Initialize counter to 0
 
   if (error) {
-    console.log(error);
-    return res.status(500).json({ error: "Failed to shorten URL" });
+    console.log("Insert error:", error);
+    return res.status(500).json({
+      error: error.message.includes("duplicate")
+        ? "Custom short code already exists. Please try another."
+        : "Failed to shorten URL",
+    });
   }
 
   res.json({
