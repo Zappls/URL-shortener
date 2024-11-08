@@ -14,7 +14,13 @@ const shortenUrl = async (longUrl, shortCode) => {
 
     const data = await response.json();
     if (response.ok) {
-      let urliBurli = data.short_URL.slice(58);
+      console.log(
+        "URL: ",
+        data.short_URL,
+        "shortCode.length",
+        shortCode.length
+      );
+      let urliBurli = data.short_URL.slice(-shortCode.length);
       document.getElementById(
         "shortUrlDisplay"
       ).innerHTML = `Shortened URL: <a href="${data.short_URL}" target="_blank">URLiab.com/${urliBurli}</a>`;
