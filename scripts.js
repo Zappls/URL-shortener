@@ -14,12 +14,6 @@ const shortenUrl = async (longUrl, shortCode) => {
 
     const data = await response.json();
     if (response.ok) {
-      console.log(
-        "URL: ",
-        data.short_URL,
-        "shortCode.length",
-        shortCode.length
-      );
       let urliBurli = data.short_URL.slice(-shortCode.length);
       document.getElementById(
         "shortUrlDisplay"

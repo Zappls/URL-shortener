@@ -2,6 +2,7 @@ import express from "express";
 import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 import cors from "cors";
+import cron from "node-cron";
 
 dotenv.config();
 
@@ -104,7 +105,21 @@ app.get("/:shortId", async (req, res) => {
   // Redirect to the original URL
   res.redirect(data.original_URL);
 });
-
+cron.schedule("0 0 * * *", async () => {
+  //Every day at midnight.
+  const { data, error } = await supabase
+    .from("URLs")
+    .delete()
+    .lt(
+      "last_accessed",
+      new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+    );
+  if (error) {
+    console.error("Error deleting old records:", error);
+  } else {
+    console.log("Old records deleted:", data);
+  }
+});
 app.listen(PORT, () => {
   console.log(
     `Server running on https://weary-troll-v6pj9r99xggrcwjwr-${PORT}.app.github.dev`
