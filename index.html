@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>URL Shortener</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>URL Shortener</h1>
+      <div id="urlFormDiv">
+        <form id="urlForm">
+          <input type="url" id="longUrl" placeholder="Enter URL" required />
+          <div id="customShortCodeDiv">
+            <label for="shortCode">URLiab.com/</label>
+            <input type="text" id="shortCode" />
+          </div>
+          <button type="submit">Shorten URL</button>
+        </form>
+      </div>
+      <div class="result" id="shortUrlDisplay"></div>
+    </div>
 
-<div class="container">
-    <h1>URL Shortener</h1>
-    <form id="urlForm">
-        <input type="url" id="longUrl" placeholder="Enter URL" required>
-        <div id="customShortCodeDiv">
-            <p>URLiab.com/</p>
-            <input type="text" id="shortCode">
-        </div>
-        <button type="submit">Shorten URL</button>
-    </form>
-    <div class="result" id="shortUrlDisplay"></div>
-</div>
-
-<script src="scripts.js"></script>
-</body>
+    <script src="scripts.js"></script>
+  </body>
 </html>
-
